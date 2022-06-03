@@ -31,8 +31,8 @@
 %% Returns: non
 %% --------------------------------------------------------------------
 create_pod()->
-    ApplId="divi_app",
-    ApplVsn="glurk",
+    ApplId="pod",
+    ApplVsn="0.1.0",
     UniqueNodeName=integer_to_list(erlang:system_time(microsecond),36),
     PodDir=UniqueNodeName++".pod_dir",
     Reply=case file:make_dir(PodDir) of
@@ -62,15 +62,21 @@ create_pod()->
 					      true->
 						  nodelog_server:log(notice,?MODULE_STRING,?LINE,
 								     {"Application  succesfully loaded ",ApplId,' ',ApplVsn,' ',PodNode}),
-						  case rpc:call(PodNode,application,start,[list_to_atom(ApplId)],20*5000) of
+						  case rpc:call(PodNode,application,set_env,[[{pod,[{pod_dir,PodDir}]}]],20*5000) of
 						      ok->
-							  nodelog_server:log(notice,?MODULE_STRING,?LINE,
-									     {"Application  succesfully started ",ApplId,' ',ApplVsn,' ',PodNode}),
-							  {ok,PodNode,PodDir};
+						      
+							  case rpc:call(PodNode,application,start,[list_to_atom(ApplId)],20*5000) of
+							      ok->
+								  nodelog_server:log(notice,?MODULE_STRING,?LINE,
+										     {"Application  succesfully started ",ApplId,' ',ApplVsn,' ',PodNode}),
+								  {ok,PodNode,PodDir};
+							      Error ->
+								  nodelog_server:log(notice,?MODULE_STRING,?LINE,
+										     {"Error whenstarting application ",ApplId,' ',Error}),
+								  Error
+							  end;
 						      Error ->
-							  nodelog_server:log(notice,?MODULE_STRING,?LINE,
-									     {"Error whenstarting application ",ApplId,' ',Error}),
-							  Error					      
+							  Error
 						  end
 					  end	
 				  end	  

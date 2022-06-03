@@ -25,11 +25,24 @@
 start()->
       
     ok=application:start(host),
-    {ok,PodNode,PodDir}=host_server:create_pod(),
-    pong=net_adm:ping(PodNode),
-    true=filelib:is_dir(PodDir),
+    {ok,PodNode1,PodDir1}=host_server:create_pod(),
+    pong=net_adm:ping(PodNode1),
+    true=filelib:is_dir(PodDir1),
+    {ok,PodNode2,PodDir2}=host_server:create_pod(),
+    pong=net_adm:ping(PodNode2),
+    true=filelib:is_dir(PodDir2),
+
+    ok=rpc:call(PodNode1,pod_server,load_start_appl,["divi_app","1.0.0"],5000),
+    ok=rpc:call(PodNode2,pod_server,load_start_appl,["divi_app","1.0.0"],5000),
     
+
+    [D1,D2]=sd:get(divi_app),
+
+    4.0=rpc:call(D1,mydivi,divi,[8,2],5000),
+    9.0=rpc:call(D2,mydivi,divi,[18,2],5000),
     timer:sleep(5000),
+
+
 
   %  ok=host_server:delete_pod(PodNode),
   %  {error,[eexists,PodNode]}=host_server:delete_pod(PodNode),

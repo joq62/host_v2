@@ -13,8 +13,4 @@
  {<<"sd_app">>,
   {git,"https://github.com/joq62/sd_app.git",
        {ref,"371a53fcd894a6e7026fa3d50d70f4f52587be3f"}},
-  0},
- {<<"service_app">>,
-  {git,"https://github.com/joq62/service_app.git",
-       {ref,"6b4e5932ddce81f011ceede3f3f6742e1a3d3434"}},
   0}].
