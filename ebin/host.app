@@ -1,0 +1,11 @@
+{application,host,
+             [{description,"An OTP application"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {mod,{host_app,[]}},
+              {applications,[kernel,stdlib]},
+              {env,[]},
+              {modules,[host_app,host_lib,host_server,host_sup,infra_lib,
+                        lib_vm]},
+              {licenses,["Apache 2.0"]},
+              {links,[]}]}.
